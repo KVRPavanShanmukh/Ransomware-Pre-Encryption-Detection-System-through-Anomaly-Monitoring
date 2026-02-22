@@ -1,0 +1,52 @@
+ransomware-monitor/
+│
+├── src/main/java/com/ransomware/monitor/
+│
+│   ├── RansomwareMonitorApplication.java
+│
+│   ├── config/
+│   │     ├── SecurityConfig.java
+│   │     └── JwtConfig.java (optional)
+│
+│   ├── controller/
+│   │     ├── AuthController.java
+│   │     ├── LogController.java
+│   │     └── AlertController.java
+│
+│   ├── service/
+│   │     ├── AuthService.java
+│   │     ├── EventLogService.java
+│   │     ├── AlertService.java
+│   │     └── AnomalyDetectionService.java
+│
+│   ├── repository/
+│   │     ├── UserRepository.java
+│   │     ├── EventLogRepository.java
+│   │     ├── AlertRepository.java
+│   │     ├── LogHashRepository.java
+│   │     └── ProcessWhitelistRepository.java
+│
+│   ├── entity/
+│   │     ├── User.java
+│   │     ├── EventLog.java
+│   │     ├── Alert.java
+│   │     ├── LogHash.java
+│   │     └── ProcessWhitelist.java
+│
+│   ├── dto/
+│   │     ├── LoginRequest.java
+│   │     ├── LogRequest.java
+│   │     └── AlertResponse.java
+│
+│   ├── security/
+│   │     ├── CustomUserDetailsService.java
+│   │     └── JwtFilter.java (optional)
+│
+│   ├── util/
+│   │     └── HashUtil.java
+│   │
+│   └── exception/
+│         └── GlobalExceptionHandler.java
+│
+└── src/main/resources/
+      ├── application.properties

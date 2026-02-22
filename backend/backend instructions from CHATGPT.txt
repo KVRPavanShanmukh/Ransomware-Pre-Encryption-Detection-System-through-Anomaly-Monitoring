@@ -1,0 +1,224 @@
+🚀 STEP 0 — What We Are Building
+
+Backend responsibilities:
+
+Connect to RANSOMWARE DB
+
+Authenticate admin
+
+Store event logs
+
+Generate hash for logs
+
+Detect anomaly
+
+Create alerts
+
+Expose REST APIs
+
+🏗 STEP 1 — Create Spring Boot Project
+
+Use:
+
+Spring Web
+
+Spring Data JPA
+
+Spring Security
+
+MySQL Driver
+
+Lombok (optional)
+
+Package name:
+
+com.ransomware.monitor
+⚙️ STEP 2 — application.properties
+
+Very important. Check carefully.
+
+spring.datasource.url=jdbc:mysql://localhost:3306/RANSOMWARE
+spring.datasource.username=root
+spring.datasource.password=your_password
+
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+
+server.port=8080
+
+⚠️ ddl-auto=none important because tables already exist.
+
+🧱 STEP 3 — Create Entity Classes
+
+We will map tables to entities.
+
+1️⃣ User Entity
+@Entity
+@Table(name = "users")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(unique = true)
+    private String username;
+
+    private String passwordHash;
+    private String email;
+    private String secQ;
+    private String secAHash;
+
+    private Timestamp createdAt;
+}
+2️⃣ EventLog Entity
+@Entity
+@Table(name = "event_logs")
+public class EventLog {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private Integer eventId;
+    private String processName;
+    private Integer pid;
+    private String targetPath;
+    private String accessType;
+    private Double entropy;
+
+    private LocalDateTime timestamp;
+}
+3️⃣ Alert Entity
+@Entity
+@Table(name = "alerts")
+public class Alert {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Enumerated(EnumType.STRING)
+    private Severity severity;
+
+    private String processName;
+    private Integer pid;
+    private String triggerReason;
+    private String actionTaken;
+    private Boolean resolved;
+    private LocalDateTime timestamp;
+}
+
+Enum:
+
+public enum Severity {
+    LOW, MEDIUM, HIGH, CRITICAL
+}
+📦 STEP 4 — Create Repositories
+public interface UserRepository extends JpaRepository<User, Integer> {
+    Optional<User> findByUsername(String username);
+}
+public interface EventLogRepository extends JpaRepository<EventLog, Integer> {
+}
+public interface AlertRepository extends JpaRepository<Alert, Integer> {
+}
+🧠 STEP 5 — Log Hash Generation (Tamper Proof)
+
+When event saved → generate SHA-256 → store in log_hashes.
+
+Create utility:
+
+public class HashUtil {
+
+    public static String sha256(String input) {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            hexString.append(String.format("%02x", b));
+        }
+        return hexString.toString();
+    }
+}
+🚨 STEP 6 — Anomaly Detection Logic (Core Part)
+
+For now simple threshold logic:
+
+if(entropy > 7.5 && accessType.equals("Write")) {
+    generateAlert("HIGH", processName, pid, "High entropy file write detected");
+}
+
+Later ML integrate cheyyachu.
+
+🛠 STEP 7 — Service Layer
+
+EventLogService:
+
+Save log
+
+Generate hash
+
+Check anomaly
+
+Create alert
+
+Flow:
+
+Receive log → Save → Hash → Detect → Alert
+🌐 STEP 8 — REST Controller
+
+Example:
+
+@PostMapping("/api/log")
+public ResponseEntity<?> receiveLog(@RequestBody EventLog log) {
+    eventLogService.processLog(log);
+    return ResponseEntity.ok("Log processed");
+}
+@GetMapping("/api/alerts")
+public List<Alert> getAlerts() {
+    return alertRepository.findAll();
+}
+🔐 STEP 9 — Spring Security (Login)
+
+Use:
+
+BCryptPasswordEncoder
+
+Custom UserDetailsService
+
+Since admin already exists, login will verify password hash.
+
+🔍 STEP 10 — Testing Strategy
+
+Use Postman:
+
+POST sample event
+
+Check DB
+
+Check hash table
+
+Check alert creation
+
+🎯 Final Backend Flow
+System Monitor → API → Save Log → Hash → Anomaly Check → Alert → DB
+💣 Why Your Previous Attempt Failed
+
+Most common reasons:
+
+Wrong column mapping (camelCase vs snake_case)
+
+Wrong DB password
+
+Hibernate trying to recreate tables
+
+Enum mapping issue
+
+Timestamp datatype mismatch
+
+🧠 Important
+
+Your DB design is GOOD.
+Problem almost 90% configuration side.
