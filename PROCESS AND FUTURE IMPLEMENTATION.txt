@@ -1,0 +1,252 @@
+Working Model:
+🎯 What It Does NOT Do (Important):
+It does NOT:
+Delete files
+Modify files
+Block system
+Access personal data
+Upload file contents
+It only monitors metadata (rename frequency).
+
+
+
+🧠 Detecting the Preparation Stage
+
+Ransomware timeline usually:
+
+Gain access
+
+Disable backup
+
+Start renaming / staging
+
+Begin encrypting
+
+Add ransom note
+
+We intercept at:
+
+➡ Stage 3 (Mass rename spike)
+➡ Stage 4 (Rapid modification burst)
+
+
+
+
+
+1️⃣ What Did We Use for Anomaly Monitoring?
+
+We used behavior-based anomaly detection, not signature-based detection.
+
+That means:
+
+Instead of checking:
+
+“Is this file a known virus?”
+
+We check:
+
+“Is the system behaving abnormally?”
+
+🔍 Our Anomaly Monitoring Techniques
+✅ 1. Mass File Rename Detection
+
+Why?
+
+Before encryption completes, ransomware usually:
+
+Renames files rapidly
+
+Adds extensions like .locked, .enc, .crypt
+
+Changes file metadata in bulk
+
+We detect:
+
+More than X renames within Y seconds
+
+Suspicious extensions appearing suddenly
+
+That is behavioral spike detection.
+
+✅ 2. High File Modification Spike
+
+If too many files are modified quickly:
+
+Could indicate encryption process starting
+
+We track modification frequency inside time window
+
+This is rate-based anomaly detection.
+
+✅ 3. Suspicious Extension Monitoring
+
+We check for:
+
+[".locked", ".encrypted", ".crypt", ".enc"]
+
+If those appear → immediate red flag.
+
+This is pattern-based anomaly detection.
+
+✅ 4. Suspicious Process Observation (Optional Layer)
+
+We observe if:
+
+powershell.exe
+
+cmd.exe
+
+unknown executables
+
+are heavily interacting with files.
+
+This is process-behavior correlation.
+
+✅ 5. Event Correlation (Backend Sysmon Simulation)
+
+We simulate:
+
+FileRename
+
+ProcessCreate
+
+NetworkConn
+
+And combine them into alert severity.
+
+This is multi-event correlation detection.
+
+2️⃣ How Did We Detect Pre-Encryption?
+
+Very important.
+
+We detect before full encryption completes by:
+
+🧠 Detecting the Preparation Stage
+
+Ransomware timeline usually:
+
+Gain access
+
+Disable backup
+
+Start renaming / staging
+
+Begin encrypting
+
+Add ransom note
+
+We intercept at:
+
+➡ Stage 3 (Mass rename spike)
+➡ Stage 4 (Rapid modification burst)
+
+So instead of detecting encrypted files,
+we detect the behavior leading to encryption.
+
+That is pre-encryption detection.
+
+3️⃣ Did We Stop It?
+
+Currently:
+
+We detect and alert.
+
+We do NOT automatically:
+
+Kill processes
+
+Block disk write
+
+Lock filesystem
+
+Right now it is:
+
+Detection + Alerting System
+
+But it can be upgraded to:
+
+Auto process termination
+
+Network isolation
+
+Directory lock
+
+Quarantine mode
+
+4️⃣ What Techniques Did We Technically Use?
+
+Here’s your viva-ready list:
+
+🧠 1. Behavioral Anomaly Detection
+
+Detecting deviations from normal file activity patterns.
+
+🧠 2. Time-Window Threshold Analysis
+
+Using:
+
+if count >= threshold within X seconds:
+
+This is statistical thresholding.
+
+🧠 3. Frequency-Based Heuristic Detection
+
+High frequency of rename/modify = suspicious.
+
+Heuristic-based detection method.
+
+🧠 4. Event Correlation Logic
+
+Combining:
+
+File events
+
+Process events
+
+Extension patterns
+
+To determine severity.
+
+🧠 5. Tokenized Secure Agent Communication
+
+HMAC-based detector token for secure reporting.
+
+This prevents spoofing.
+
+🧠 6. Email Alert + Daily Log Summary
+
+Security event reporting system.
+
+5️⃣ What We DID NOT Use (Be Honest in Viva)
+
+We did NOT use:
+Machine Learning
+Neural Networks
+AI-based clustering
+Deep learning models
+Real-time kernel drivers
+Windows filter drivers
+Our system is:
+Lightweight behavioral anomaly detection using threshold logic and event correlation.
+
+🎯 One-Line Project Explanation
+
+If someone asks:
+
+“How does your system detect ransomware pre-encryption?”
+You say:
+Our system detects abnormal file system behavior such as mass renaming and rapid modification
+spikes within short time windows, which are strong indicators of ransomware pre-encryption
+activity, and immediately alerts the user before full encryption completes.
+
+
+
+
+
+
+Future Implementations:
+
+Unique HashValues for each user while logging in.
+SOAR implementation
+The file will have permissions to stop,block a runnig file.
