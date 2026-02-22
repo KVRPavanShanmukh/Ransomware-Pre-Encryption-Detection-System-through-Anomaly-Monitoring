@@ -127,6 +127,7 @@ def send_email_safe(to_email, subject, body):
 
     except Exception as e:
         print("Email error:", e)
+        print("SMTP ERROR:", e)
         return False
 
 
@@ -289,25 +290,54 @@ def detector_log():
     if not info:
         return jsonify({"error": "Invalid token"}), 401
 
+    user_id = info["user_id"]
+    user_email = info["email"]
+
+    event_type = data.get("event_type")
+    directory = data.get("details", {}).get("directory")
+    count = data.get("details", {}).get("count")
+
     conn = pool.get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
         INSERT INTO detector_logs (user_id, event_type, directory, event_count)
         VALUES (%s, %s, %s, %s)
-    """, (
-        info["user_id"],
-        data.get("event_type"),
-        data.get("details", {}).get("directory"),
-        data.get("details", {}).get("count")
-    ))
+    """, (user_id, event_type, directory, count))
 
     conn.commit()
     cursor.close()
     conn.close()
 
-    return jsonify({"status": "event stored"}), 200
+    print("Event stored:", event_type)
 
+    # 🔥 CRITICAL EMAIL TRIGGER
+    if event_type == "mass_rename":
+
+        print("Triggering email to:", user_email)
+
+        send_email_safe(
+            user_email,
+            "⚠ PRD-SYS ALERT: Mass File Rename Detected",
+            f"""
+PRD-SYS detected suspicious file renaming activity.
+
+Directory: {directory}
+Files Renamed: {count}
+
+This may indicate ransomware behavior.
+
+Recommended Actions:
+• Disconnect from internet
+• Stop suspicious processes
+• Run full system scan
+
+Stay Secure,
+PRD-SYS Engine
+"""
+        )
+
+    return jsonify({"status": "event stored"}), 200
 
 # =====================================================
 # LOG FILE UPLOAD
