@@ -5,8 +5,8 @@ try:
         host="localhost",
         port=3306,
         user="root",
-        password="shanmukh@2006",
-        database="RANSOMWARE"
+        password="passwors",
+        database="dbname"
     )
     cursor = connection.cursor()
 

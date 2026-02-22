@@ -22,7 +22,7 @@ USER_EMAIL = config["email"]
 # SETTINGS
 # ==============================
 
-RENAME_THRESHOLD = 3       # 🔥 Change if needed
+RENAME_THRESHOLD = 5
 TIME_WINDOW = 10           # seconds
 
 rename_events = deque()
