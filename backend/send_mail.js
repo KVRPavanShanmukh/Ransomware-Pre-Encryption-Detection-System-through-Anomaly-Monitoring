@@ -39,7 +39,7 @@ const htmlContent = `
 <html>
 <head>
     <meta charset="utf-8">
-    <title>SentinelStream Alert</title>
+    <title>SelectShans Alert</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #0b0f19; color: #e2e8f0; margin: 0; padding: 20px; }
         .container { max-width: 600px; margin: 0 auto; background-color: #111827; border: 1px solid #1f2937; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); }
@@ -56,7 +56,7 @@ const htmlContent = `
 <body>
     <div class="container">
         <div class="header">
-            <h1>🛡️ SentinelStream Security</h1>
+            <h1>🛡️ SelectShans Security</h1>
         </div>
         <div class="content">
             <h2>Security Notification</h2>
@@ -69,7 +69,7 @@ const htmlContent = `
             </div>
         </div>
         <div class="footer">
-            SentinelStream Protection Engine &copy; 2026. All rights reserved.
+            SelectShans Protection Engine &copy; 2026. All rights reserved.
         </div>
     </div>
 </body>
@@ -77,7 +77,7 @@ const htmlContent = `
 `;
 
 const mailOptions = {
-    from: `"SentinelStream Security" <${userEmail}>`,
+    from: `"SelectShans Security" <${userEmail}>`,
     to: to,
     subject: subject,
     text: body,
